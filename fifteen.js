@@ -2,8 +2,9 @@ PostionsOnBoard=[[0,0],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[100,
  /*stores  possbile postions a tile can on have a board*/
 
 //               tile 1  tile 2  tile 3  tile 4  tile 5   tile 6    tile 7    tile 8   tile 9   tile 10   tile 11   tile 12  tile 13  tile 14   tile 15  Blank
-tileXYPostion=[[300,300],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[100,300],[200,0],[200,100],[200,200],[200,300],[300,0],[300,100],[300,200],[0,0]];
+tileXYPostion=[[0,0],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[100,300],[200,0],[200,100],[200,200],[200,300],[300,0],[300,100],[300,300],[300,200]];
  /*stores xy postion of a tile, tile 1 is index 0 so if index 0==[200,200] tileXYPostion is checked  compared to PostionsOnBoard and would be in location 10 on the board */
+ cached=[[0,0],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[100,300],[200,0],[200,100],[200,200],[200,300],[300,0],[300,300],[300,100],[300,200]];
 
  /*setInterval(function(){
      blank=withIn(tileXYPostion[15].toString(),PostionsOnBoard);
@@ -14,11 +15,15 @@ tileXYPostion=[[300,300],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[10
 $(function(){
 var puzzleArea = $("#puzzlearea");
 var tiles = $("#puzzlearea").children();// each child div is saved as tiles
+$('.puzzlepiece').css('background-image','url( http://images.electricpig.co.uk/wp-content/uploads/2011/06/400px-Grand-Theft-Auto-Series.jpeg)');
 
 
-boardUpdate(tiles,PostionsOnBoard);//sets up board to default
+boardUpdate(tiles,tileXYPostion);//sets up board to default
+
+
 
 $('#shufflebutton').click(function(){//------------------------------------- not complete
+  tileXYPostion=cached;
   boardUpdate(tiles,tileXYPostion);//sets up board to default
 });
 
@@ -31,31 +36,66 @@ $(".puzzlepiece").mouseenter(function(){
   replaced with a blankSpace*/
 
   blank=withIn(tileXYPostion[15].toString(),PostionsOnBoard);//finds the blank space on the board
+  postion=withIn(xyPos,PostionsOnBoard);//finds postion  of the tile currently hovering over
 
-  postion=withIn(xyPos,PostionsOnBoard);
+  isMoveAble(blank,postion,selectedTile);
 
-  isMoveAble(postion,blank,selectedTile);
+ if ($(this).hasClass( "movablepiece" )){
+  $(this).click(function(){
+    blank=withIn(tileXYPostion[15].toString(),tileXYPostion);//finds xy cords of the blankSpace
+    postion=withIn(xyPos,tileXYPostion);//finds xy cords of the tile currently hovering over
+    moveTile(postion,blank,tileXYPostion,tiles);
+    });
+}
 });
 
 
 });
+
+function moveTile(postion,blank,array,tiles) {
+
+var newBlank    = tileXYPostion[postion];
+console.log("---------------------------1-----------------------");
+console.log(newBlank);
+tileXYPostion[postion]  = tileXYPostion[blank];
+console.log("---------------------------2-----------------------");
+console.log(tileXYPostion[postion]);
+tileXYPostion[blank]    = newBlank;
+console.log("---------------------------3-----------------------");
+console.log(tileXYPostion[blank]);
+console.log("---------------------------4-----------------------");
+//console.log(tileXYPostion);
+
+boardUpdate(tiles,tileXYPostion);
+
+if (tileXYPostion.toString()==PostionsOnBoard.toString()){
+  $("#puzzlearea").css("background-color","green");
+  $("h1").text("YOU WIN!! :D");
+}
+}
 
 
 function isMoveAble(int,blankSpace,$selectedTile){
+
 $.each($selectedTile, function() {
   if (int - 4 ==  blankSpace){
   $(this).addClass("movablepiece");
   console.log('can move');
+  return true;
 }else if (int + 4 ==   blankSpace) {
   $(this).addClass("movablepiece");
   console.log('can move');
+  return true;
 }else if (int - 1 == blankSpace) {
   $(this).addClass("movablepiece");
   console.log('can move');
+  return true;
 }else if (int + 1 ==blankSpace){
   $(this).addClass("movablepiece");
   console.log('can move');
-    }
+  return true;
+  }
+
   });
 }
 
