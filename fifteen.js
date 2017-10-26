@@ -5,7 +5,11 @@ PostionsOnBoard=[[0,0],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[100,
 tileXYPostion=[[300,300],[0,100],[0,200],[0,300],[100,0],[100,100],[100,200],[100,300],[200,0],[200,100],[200,200],[200,300],[300,0],[300,100],[300,200],[0,0]];
  /*stores xy postion of a tile, tile 1 is index 0 so if index 0==[200,200] tileXYPostion is checked  compared to PostionsOnBoard and would be in location 10 on the board */
 
-blankSpace=tileXYPostion[15]//store location of black space
+ /*setInterval(function(){
+     blank=withIn(tileXYPostion[15].toString(),PostionsOnBoard);
+     console.log(blank);
+ }, 5000);*/
+
 
 $(function(){
 var puzzleArea = $("#puzzlearea");
@@ -13,25 +17,47 @@ var tiles = $("#puzzlearea").children();// each child div is saved as tiles
 
 
 boardUpdate(tiles,PostionsOnBoard);//sets up board to default
-console.log(tiles);
 
 $('#shufflebutton').click(function(){//------------------------------------- not complete
-  boardUpdate(tiles,currentPlay);//sets up board to default
+  boardUpdate(tiles,tileXYPostion);//sets up board to default
 });
+
 
 $(".puzzlepiece").mouseenter(function(){
-  xyPos = $(this).css("top").replace("px","")+","+$(this).css("left").replace("px","");
+  var selectedTile =$(this);
+
+  xyPos   = $(this).css("top").replace("px","")+","+$(this).css("left").replace("px","");
   /* gets x(left css Postion) and y(Top css Postion) cord of tiles. the postions.the values are return as an int but are converted to string and the 'px' is
   replaced with a blankSpace*/
-  withIn(xyPos,PostionsOnBoard);
 
+  blank=withIn(tileXYPostion[15].toString(),PostionsOnBoard);//finds the blank space on the board
+
+  postion=withIn(xyPos,PostionsOnBoard);
+
+  isMoveAble(postion,blank,selectedTile);
+});
+
+
+});
+
+
+function isMoveAble(int,blankSpace,$selectedTile){
+$.each($selectedTile, function() {
+  if (int - 4 ==  blankSpace){
   $(this).addClass("movablepiece");
-//console.log(array);
-});
-
-
-});
-
+  console.log('can move');
+}else if (int + 4 ==   blankSpace) {
+  $(this).addClass("movablepiece");
+  console.log('can move');
+}else if (int - 1 == blankSpace) {
+  $(this).addClass("movablepiece");
+  console.log('can move');
+}else if (int + 1 ==blankSpace){
+  $(this).addClass("movablepiece");
+  console.log('can move');
+    }
+  });
+}
 
 
 function withIn(string,array){ // locates postion of tile on board
